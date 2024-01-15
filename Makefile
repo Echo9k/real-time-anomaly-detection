@@ -1,10 +1,11 @@
 # Build the Jupyter Docker image
 build-jupyter:
-	docker build -t 9k/anomaly_jupyter .
+	docker build -t 9k/anomaly_jupyter jupyter
 
 # Run the Jupyter Docker container
 run-jupyter:
-	docker run -v $(PWD):/src -p 8888:8888 9k/anomaly_jupyter
+	docker run -v $(PWD):/jupyter/src -p 8888:8888 9k/anomaly_jupyter
+
 # Build the service Docker image
 build-service:
 	docker build -t 9k/anomaly_service -f service/Dockerfile service
