@@ -21,4 +21,4 @@ RUN pip install -r requirements.txt
 ENTRYPOINT ["uvicorn"]
 
 # Default command to be appended to entry point, can be overridden by additional arguments during 'docker run'
-CMD ["main:app", "--host", "0.0.0.0", "--port", "8000", "--log-level", "debug", "--log-config", "/app/logging.conf"]
+CMD ["main:app", "--host", "0.0.0.0", "--port", "8000", "--log-config", "/app/logging.conf"]
