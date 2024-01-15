@@ -2,13 +2,15 @@
 FROM python:3.7-slim
 
 # Create a directory named 'src' inside the container
-RUN mkdir /src
+RUN mkdir --parents /src/data/raw
+RUN mkdir /src/notebooks
 
 # Set the working directory to /src
 WORKDIR /src
 
 # Copy the data directory and requirements.txt into the container
 COPY ./data/raw/ /src/data/raw/
+COPY ./notebooks/ /src/notebooks/
 COPY ./requirements.txt /src/
 
 # Install Jupyter and any additional requirements
