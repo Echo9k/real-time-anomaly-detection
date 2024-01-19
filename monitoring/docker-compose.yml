@@ -35,7 +35,7 @@ services:
       - ./grafana/provisioning:/etc/grafana/provisioning  # To mount the configuration file
     environment:  # To set the admin user and password
       GF_SECURITY_ADMIN_USER: ${ADMIN_USER:-admin}  # To set the admin user
-      GF_SECURITY_ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin}  # To set the admin password
+      GF_SECURITY_ADMIN_PASSWORD: "${ADMIN_PASSWORD:-admin}"  # To set the admin password
       GF_USERS_ALLOW_SIGN_UP: "false"  # To disable the sign up
     # Uncomment the following lines for testing purposes only
     # ports:  # To make Grafana accessible from the host machine
@@ -48,8 +48,8 @@ services:
     volumes:
       - ./caddy:/etc/caddy
     environment:
-      ADMIN_USER: ${ADMIN_USER:-admin}
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin}
+      ADMIN_USER: ${ADMIN_USER}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
     ports:
       - '3000:3000'
       - '9090:9090'
