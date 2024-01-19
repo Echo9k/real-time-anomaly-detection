@@ -1,0 +1,55 @@
+version: '3'
+
+volumes:
+  prometheus_data:
+    name: prometheus_data  # To persist the data
+  grafana_data:
+    name: grafana_data  # To persist the data
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.31.1  # To specify the version of Prometheus
+    container_name: prometheus  # To give a name to the container
+    volumes:
+      - ./prometheus:/etc/prometheus  # To mount the configuration file
+      - prometheus_data:/prometheus  # To mount the data directory
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'  # To specify the location of the configuration file
+      - '--storage.tsdb.path=/prometheus'  # To set where Prometheus writes its database
+      - '--storage.tsdb.retention.time=48h'  # To explicitly define when we want to delete the old data
+    restart: unless-stopped  # To keep Prometheus running unless it is manually stopped
+    expose:  # To make Prometheus accessible to the other services
+      - '9090'
+    # Uncomment the following lines for testing purposes only
+    # ports:  # To make Prometheus accessible from the host machine
+    #  - '9090:9090'
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    expose:
+      - '3000'
+    volumes:  # To mount the configuration file and the data directory
+      - grafana_data:/var/lib/grafana  # To mount the data directory
+      - ./grafana/provisioning:/etc/grafana/provisioning  # To mount the configuration file
+    environment:  # To set the admin user and password
+      GF_SECURITY_ADMIN_USER: ${ADMIN_USER:-admin}  # To set the admin user
+      GF_SECURITY_ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin}  # To set the admin password
+      GF_USERS_ALLOW_SIGN_UP: "false"  # To disable the sign up
+    # Uncomment the following lines for testing purposes only
+    # ports:  # To make Grafana accessible from the host machine
+    # - '3000:3000'
+
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    restart: unless-stopped
+    volumes:
+      - ./caddy:/etc/caddy
+    environment:
+      ADMIN_USER: ${ADMIN_USER:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin}
+    ports:
+      - '3000:3000'
+      - '9090:9090'

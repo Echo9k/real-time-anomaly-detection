@@ -1,0 +1,15 @@
+:9090 {
+    reverse_proxy prometheus:9090
+    log {
+        output stderr
+    }
+    tls internal
+}
+
+:3000 {
+    reverse_proxy grafana:3000
+    log {
+        output stderr
+    }
+    tls internal
+}
