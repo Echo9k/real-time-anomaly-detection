@@ -33,9 +33,10 @@ services:
     volumes:  # To mount the configuration file and the data directory
       - grafana_data:/var/lib/grafana  # To mount the data directory
       - ./grafana/provisioning:/etc/grafana/provisioning  # To mount the configuration file
+      - ./grafana/provisioning/grafana.ini:/etc/grafana/grafana.ini  # To mount the configuration file
     environment:  # To set the admin user and password
-      GF_SECURITY_ADMIN_USER: ${ADMIN_USER:-admin}  # To set the admin user
-      GF_SECURITY_ADMIN_PASSWORD: "${ADMIN_PASSWORD:-admin}"  # To set the admin password
+      #GF_SECURITY_ADMIN_USER: ${GF_USER:-admin}  # To set the admin user
+      #GF_SECURITY_ADMIN_PASSWORD: ${GF_PASSWORD:-admin}  # To set the admin password
       GF_USERS_ALLOW_SIGN_UP: "false"  # To disable the sign up
     # Uncomment the following lines for testing purposes only
     # ports:  # To make Grafana accessible from the host machine
@@ -48,8 +49,15 @@ services:
     volumes:
       - ./caddy:/etc/caddy
     environment:
-      ADMIN_USER: ${ADMIN_USER}
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      ADMIN_USER: ${CY_USER:-admin}
+      ADMIN_PASSWORD: ${CY_PASSWORD:-admin}
     ports:
       - '3000:3000'
       - '9090:9090'
+
+  anomaly_service:
+    image: 9k/anomaly_service  # Use the image defined in Milestone 4
+    container_name: service  # Set the container name to 'service'
+    restart: unless-stopped  # To keep the service running unless it is manually stopped
+    ports:
+      - '8000:8000'  # Map port 8000 from the container to 8000 on the host machine
